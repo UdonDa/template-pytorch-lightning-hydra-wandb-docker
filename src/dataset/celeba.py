@@ -8,35 +8,66 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-import torchvision.transforms as transforms
+import torchvision.transforms as T
 from torch import Tensor
-from pytorch_lightning import LightningDataModule, LightningModule, Trainer
-from torch.utils.data import DataLoader, random_split
-from torchvision.datasets import MNIST
+from glob import glob
 
 
-class Dataset(torch.utils.data.Dataset):
+class CelebADataset(torch.utils.data.Dataset):
+    def __init__(self,
+            root: str = '/src/datasets/celeba',
+            is_train: bool = False,
+            transform=None
+        ) -> None:
+        super().__init__()
+
+        self.transform = transform
+
+        self.files = glob(os.path.join(root, '*.png'))
+        
+        ids = list(range(len(self.files)))
+        if is_train:
+            self.ids = ids[0:int(len(ids)*0.8)]
+        else:
+            self.ids = ids[int(len(ids)*0.8):]
+
     def __len__(self) -> None:
-        return len(self.dataset)
+        return len(self.ids)
 
     def __getitem__(self, key: Union[int, slice]) -> Union[Tensor, List[Tensor]]:
-        return self.dataset[key]
+        img, label = self.dataset[key]
+        
+        img = img.convert('RGB')
+        img = self.transform(img) # [3, 28, 28], range: [-1, 1]
+        
+        label = F.one_hot(torch.tensor(label), num_classes=10) # [10]
+
+        return img, label
 
 
-class TrainDataset(Dataset):
+class TrainDataset(CelebADataset):
     def __init__(self) -> None:
-        super().__init__()
-        # like a dataset of images
-        self.dataset = [torch.randn(1, 28, 28) for _ in range(80000)]
+        transform = T.Compose([
+            T.Resize((256, 256)),
+            T.RandomHorizontalFlip(),
+            T.ToTensor(),
+            T.Normalize(mean=0.5, std=0.5),
+        ])
+        super().__init__(is_train=True, transform=transform)
+        
 
-
-class ValDataset(Dataset):
+class TestDataset(CelebADataset):
     def __init__(self) -> None:
-        super().__init__()
-        self.dataset = [torch.randn(1, 28, 28) for _ in range(10000)]
+        transform = T.Compose([
+            T.Resize((256, 256)),
+            T.ToTensor(),
+            T.Normalize(mean=0.5, std=0.5),
+        ])
+
+        super().__init__(is_train=False, transform=transform)
 
 
-class TestDataset(Dataset):
-    def __init__(self) -> None:
-        super().__init__()
-        self.dataset = [torch.randn(1, 28, 28) for _ in range(10000)]
+if __name__ == '__main__':
+    d = TrainDataset() # 60,000
+    d1 = TestDataset() # 10,000
+    print(len(d), len(d1))

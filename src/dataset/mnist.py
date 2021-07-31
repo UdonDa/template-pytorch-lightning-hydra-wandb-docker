@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-import torchvision.transforms as transforms
+import torchvision.transforms as T
 from torch import Tensor
 from torchvision.datasets import MNIST
 
@@ -20,36 +20,38 @@ class MNISTDataset(torch.utils.data.Dataset):
         ) -> None:
         super().__init__()
 
-        self.dataset = MNIST(root, train=is_train, download=True)
+        self.transform = T.Compose([
+            T.ToTensor(),
+            T.Normalize(mean=0.5, std=0.5),
+        ])
 
+        self.dataset = MNIST(root, train=is_train, download=True)
 
     def __len__(self) -> None:
         return len(self.dataset)
 
     def __getitem__(self, key: Union[int, slice]) -> Union[Tensor, List[Tensor]]:
-        return self.dataset[key]
+        img, label = self.dataset[key]
+        
+        img = img.convert('RGB')
+        img = self.transform(img) # [3, 28, 28], range: [-1, 1]
+        
+        label = F.one_hot(torch.tensor(label), num_classes=10) # [10]
+
+        return img, label
 
 
 class TrainDataset(MNISTDataset):
     def __init__(self) -> None:
-        super().__init__()
-        # like a dataset of images
-        # self.dataset = MNISTDataset(is_train=True)
-        print('a')
-
-
-class ValDataset(MNISTDataset):
-    def __init__(self) -> None:
-        super().__init__()
-        self.dataset = [torch.randn(1, 28, 28) for _ in range(10000)]
-
+        super().__init__(is_train=True)
+        
 
 class TestDataset(MNISTDataset):
     def __init__(self) -> None:
-        super().__init__()
-        self.dataset = [torch.randn(1, 28, 28) for _ in range(10000)]
+        super().__init__(is_train=False)
 
 
 if __name__ == '__main__':
-    d = TrainDataset()
-    print('a')
+    d = TrainDataset() # 60,000
+    d1 = TestDataset() # 10,000
+    print(len(d), len(d1))
