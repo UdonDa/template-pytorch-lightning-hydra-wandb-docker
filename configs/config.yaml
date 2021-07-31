@@ -18,6 +18,7 @@ lr: 1e-5
 epochs: 5
 batch_size: 16
 latent_dim: 20
+solver: src.solver.experiment
 
 
 # path to original working directory (that `run.py` was executed from in command line)

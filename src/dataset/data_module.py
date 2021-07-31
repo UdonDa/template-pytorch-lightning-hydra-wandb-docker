@@ -2,7 +2,7 @@ import os
 from typing import Optional
 
 import pytorch_lightning as pl
-from src.dataset import TestDataset, TrainDataset, ValDataset
+from src.dataset.dataset import TestDataset, TrainDataset, ValDataset
 from torch.utils.data import DataLoader
 
 

@@ -4,26 +4,26 @@ import torch.nn.functional as F
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 from pytorch_lightning.callbacks import LearningRateMonitor
-from src.data_module import DataModule
-from src.model import VAE
+from src.dataset.data_module import DataModule
+from src.models.model import VAE
 from torch import Tensor
 from torch.optim import Optimizer
 
 
-class Experiment(pl.LightningModule):
-    def __init__(self, config: DictConfig) -> None:
-        super(Experiment, self).__init__()
-        self.config: DictConfig = config
-        logger = instantiate(config.logger)
+class Solver(pl.LightningModule):
+    def __init__(self, conf: DictConfig) -> None:
+        super(Solver, self).__init__()
+        self.config: DictConfig = conf
+        logger = instantiate(conf.logger)
         self.trainer = instantiate(
-            config.trainer,
+            conf.trainer,
             logger=logger,
             callbacks=[
                 LearningRateMonitor(logging_interval="step"),
             ],
         )
-        self.model = VAE(latent_dim=config.latent_dim)
-        self.data_module = DataModule(batch_size=config.batch_size)
+        self.model = VAE(latent_dim=conf.latent_dim)
+        self.data_module = DataModule(batch_size=conf.batch_size)
 
     def configure_optimizers(self):
         params = self.model.parameters()

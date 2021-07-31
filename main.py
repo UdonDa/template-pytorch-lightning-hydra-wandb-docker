@@ -1,12 +1,18 @@
 import hydra
+import importlib
 from omegaconf import DictConfig
-from src.experiment import Experiment
+# from src.solver.experiment import Experiment
+from hydra.utils import instantiate
 
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig) -> None:
-    exp = Experiment(config)
-    exp.run()
+    exp = getattr(
+            importlib.import_module(config.solver), 'Solver')(
+                config
+            )
+
+    # exp.run()
 
 
 if __name__ == "__main__":
