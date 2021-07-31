@@ -23,7 +23,7 @@ class Solver(pl.LightningModule):
             ],
         )
         self.model = VAE(latent_dim=conf.latent_dim)
-        self.data_module = DataModule(batch_size=conf.batch_size)
+        self.data_module = DataModule(config=conf.dataset)
 
     def configure_optimizers(self):
         params = self.model.parameters()

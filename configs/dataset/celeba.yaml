@@ -1,0 +1,22 @@
+# @package dataset
+
+# _target_: src.dataset.celeba
+
+train_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: src.dataset.celeba.TrainDataset
+  batch_size: 32
+  num_workers: 4
+  pin_memory: True
+
+val_dataloader:
+  _target_:   
+
+test_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: src.dataset.celeba.TestDataset
+  batch_size: 32
+  num_workers: 4
+  pin_memory: True

@@ -6,6 +6,7 @@ defaults:
   - optimizer: adam
   - scheduler: step
   - logger: mlflow
+  - dataset: celeba
 
   # enable color logging
   - override hydra/job_logging: colorlog
