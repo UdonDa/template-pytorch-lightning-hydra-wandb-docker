@@ -15,7 +15,7 @@ You can easily overwrite these configurations through command line arguments.
 ## Instllation
 
 ```bash
-poetry install
+1. sh scripts/docker/build.sh
 ```
 
 ## Run Training
@@ -32,7 +32,7 @@ poetry run python main.py -m optimizer=adam,rmsprop,sgd trainer.precision=16,32 
 ## Start Mlflow Server
 
 ```bash
-poetry run mlflow ui
+mlflow ui
 # access http://127.0.0.1:5000
 ```
 
@@ -40,5 +40,5 @@ poetry run mlflow ui
 ## Run Formatter
 
 ```bash
-poetry run pysen run format
+pysen run format
 ```

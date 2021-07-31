@@ -1,6 +1,8 @@
 # Project specific paths
 logs
 mlruns
+results
+tmp
 
 
 # Byte-compiled / optimized / DLL files
@@ -30,6 +32,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.local
+.cache
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
