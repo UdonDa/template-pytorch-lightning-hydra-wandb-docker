@@ -28,7 +28,7 @@ class WandbImageFromZCallback(pl.Callback):
 
         grid = make_grid(outs, nrow=8, normalize=True)
     
-        caption = "Generated Images from randn"
+        caption = f"Generated Images from randn in {trainer.global_step} step."
         trainer.logger.experiment.log({
             "val/examples": wandb.Image(grid, caption=caption),
             "global_step": trainer.global_step
