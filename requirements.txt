@@ -32,7 +32,7 @@ tqdm
 scikit-image
 pytorch-lightning==1.4.0
 fvcore
-pytorch-lightning-bolts==0.3.2
+pytorch-lightning-bolts==0.3.4
 wandb
 gym
 sklearn
