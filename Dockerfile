@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblzma-dev \
     vim \
     graphviz \
+    libgl1-mesa-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
