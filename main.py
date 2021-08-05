@@ -1,3 +1,5 @@
+import warnings
+warnings.simplefilter('ignore')
 import hydra
 import importlib
 from omegaconf import DictConfig

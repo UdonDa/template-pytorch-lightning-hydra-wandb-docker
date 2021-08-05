@@ -1,0 +1,7 @@
+# https://pytorch-lightning.readthedocs.io/en/stable/extensions/generated/pytorch_lightning.loggers.WandbLogger.html#wandblogger
+_target_: pytorch_lightning.loggers.WandbLogger
+
+name: ${experiment_name}/${versions}
+save_dir: ${save_root}
+project: ${experiment_name}
+log_model: True

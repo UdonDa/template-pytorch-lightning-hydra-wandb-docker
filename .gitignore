@@ -4,6 +4,10 @@ mlruns
 results
 tmp
 datasets/
+.*rc
+*.config*
+*.python
+*.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

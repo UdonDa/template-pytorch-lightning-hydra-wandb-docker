@@ -6,6 +6,7 @@ import torchvision.transforms.functional as tvF
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 from pytorch_lightning.callbacks import LearningRateMonitor
+from pl_bolts.callbacks import PrintTableMetricsCallback
 from src.dataset.data_module import DataModule
 from src.models.model import VAE
 from torch import Tensor
@@ -18,20 +19,25 @@ class Solver(pl.LightningModule):
     def __init__(self, config: DictConfig) -> None:
         super(Solver, self).__init__()
         self.config: DictConfig = config
-        logger = instantiate(config.logger)
-        self.trainer = instantiate(
-            config.trainer,
-            logger=logger,
-            callbacks=[
-                LearningRateMonitor(logging_interval="step"),
-            ],
-        )
+
         self.model = VAE(latent_dim=config.latent_dim)
         self.data_module = DataModule(config=config.dataset)
 
         self.set_network()
+        self.validation_z = torch.randn(32, config.generator.nz, 1, 1)
 
-        self.validation_z = torch.randn(16, config.generator.nz, 1, 1)
+        logger_wandb = instantiate(config.logger)
+        logger_wandb.watch(self.G, log = "gradients", log_freq = 100)
+
+        self.trainer = instantiate(
+            config.trainer,
+            logger=logger_wandb,
+            callbacks=[
+                LearningRateMonitor(logging_interval="step"),
+                instantiate(config.callbacks_image, val_samples=self.validation_z),
+                PrintTableMetricsCallback()
+            ],
+        )
 
     def set_network(self):
         self.G = instantiate(self.config.generator)
@@ -106,6 +112,9 @@ class Solver(pl.LightningModule):
                 self.log(f"train/D/{k}", v)
             return output
 
+    def on_train_epoch_end(self):
+        return
+
     def on_epoch_end(self):
         z = self.validation_z.type_as(self.G.main[0].weight)
 
@@ -121,22 +130,16 @@ class Solver(pl.LightningModule):
         
     # train your model
     def fit(self):
-        self.trainer.fit(self, self.data_module)
+
         self.logger.log_hyperparams(
             {
                 "batch_size": self.config.batch_size,
                 "lr": self.config.lr,
             }
         )
-        self.log_artifact(".hydra/config.yaml")
-        self.log_artifact(".hydra/hydra.yaml")
-        self.log_artifact(".hydra/overrides.yaml")
-        self.log_artifact("main.log")
+
+        self.trainer.fit(self, self.data_module)
 
     # run your whole experiments
     def run(self):
         self.fit()
-
-    def log_artifact(self, artifact_path: str):
-        self.logger.experiment.log_artifact(self.logger.run_id, artifact_path)
-

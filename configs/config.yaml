@@ -4,7 +4,8 @@
 defaults:
   - trainer: default
   - scheduler: step
-  - logger: mlflow
+  - logger: wandb
+  - callbacks_image: wandb
   - dataset: celeba
   - generator: dcgan_64
   - discriminator: dcgan_64
@@ -17,13 +18,14 @@ defaults:
 
 # global configurations
 experiment_name: default
+versions: ???
 gpus: [0]
 lr: 1e-5
 epochs: 5
 batch_size: 16
 latent_dim: 20
 solver: src.solver.experiment
-save_root: logs/${experiment_name}/${now:%Y-%m-%d}_${now:%H:%M:%S}
+save_root: logs/${experiment_name}/${versions}
 
 
 # path to original working directory (that `run.py` was executed from in command line)
