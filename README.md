@@ -1,4 +1,4 @@
-# Template Pytorch-Lightning Hydra Mlflow Poetry
+# Template Pytorch-Lightning Hydra Wandb Poetry
 
 
 The code in this repository is based on [pytorch/examples](https://github.com/pytorch/examples/blob/2639cf050493df9d3cbf065d45e6025733add0f4/vae/main.py).
