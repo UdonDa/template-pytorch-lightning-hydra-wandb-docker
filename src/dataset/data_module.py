@@ -2,7 +2,6 @@ import os
 from typing import Optional
 
 import pytorch_lightning as pl
-from src.dataset.dataset import TestDataset, TrainDataset, ValDataset
 from torch.utils.data import DataLoader
 from hydra.utils import instantiate
 
@@ -29,15 +28,18 @@ class DataModule(pl.LightningDataModule):
 
     def train_dataloader(self) -> DataLoader:
         if self.config.train_dataloader._target_ is not None:
-            return instantiate(self.config.train_dataloader)
+            return instantiate(self.config.train_dataloader,
+                    dataset=instantiate(self.config.train_dataset))
 
     def val_dataloader(self) -> DataLoader:
         if self.config.val_dataloader._target_ is not None:
-            return instantiate(self.config.val_dataloader)
+            return instantiate(self.config.val_dataloader,
+                    dataset=instantiate(self.config.val_dataset))
 
     def test_dataloader(self) -> DataLoader:
         if self.config.test_dataloader._target_ is not None:
-            return instantiate(self.config.test_dataloader)
+            return instantiate(self.config.test_dataloader,
+                    dataset=instantiate(self.config.test_dataset))
 
     def teardown(self, stage: Optional[str] = None):
         # clean up after fit or test

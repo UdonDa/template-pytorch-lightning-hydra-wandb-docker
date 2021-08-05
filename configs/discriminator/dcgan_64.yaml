@@ -1,0 +1,6 @@
+# @package discriminator
+
+_target_: src.models.discriminators.dcgan_64.Discriminator
+
+ndf: 64
+nc: 3

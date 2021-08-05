@@ -11,19 +11,19 @@ from torch.optim import Optimizer
 
 
 class Solver(pl.LightningModule):
-    def __init__(self, conf: DictConfig) -> None:
+    def __init__(self, config: DictConfig) -> None:
         super(Solver, self).__init__()
-        self.config: DictConfig = conf
-        logger = instantiate(conf.logger)
+        self.config: DictConfig = config
+        logger = instantiate(config.logger)
         self.trainer = instantiate(
-            conf.trainer,
+            config.trainer,
             logger=logger,
             callbacks=[
                 LearningRateMonitor(logging_interval="step"),
             ],
         )
-        self.model = VAE(latent_dim=conf.latent_dim)
-        self.data_module = DataModule(config=conf.dataset)
+        self.model = VAE(latent_dim=config.latent_dim)
+        self.data_module = DataModule(config.dataset)
 
     def configure_optimizers(self):
         params = self.model.parameters()
@@ -51,6 +51,12 @@ class Solver(pl.LightningModule):
         recon_batch, mu, logvar = self.model(batch)
         loss = self.loss_fn(recon_batch, batch, mu, logvar)
         self.log("val_loss", loss)
+        return loss
+
+    def test_step(self, batch: Tensor, batch_idx: int):
+        recon_batch, mu, logvar = self.model(batch)
+        loss = self.loss_fn(recon_batch, batch, mu, logvar)
+        self.log("test_loss", loss)
         return loss
 
     # train your model

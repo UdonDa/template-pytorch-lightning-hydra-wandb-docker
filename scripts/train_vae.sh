@@ -1,0 +1,1 @@
+python main.py gpus=[3] solver=src.solver.vae dataset=normal_dist

@@ -1,11 +1,6 @@
 import hydra
 import importlib
 from omegaconf import DictConfig
-# from src.solver.experiment import Experiment
-from hydra.utils import instantiate
-
-
-from src.dataset.data_module import DataModule
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig) -> None:
@@ -15,7 +10,7 @@ def main(config: DictConfig) -> None:
                 config
             )
 
-    # exp.run()
+    exp.run()
 
 
 if __name__ == "__main__":

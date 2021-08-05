@@ -1,0 +1,30 @@
+# @package dataset
+
+# _target_: src.dataset.normal_dist
+
+train_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: src.dataset.normal_dist.TrainDataset
+  batch_size: 32
+  num_workers: 4
+  pin_memory: True
+  shuffle: True
+
+val_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: src.dataset.normal_dist.ValDataset
+  batch_size: 32
+  num_workers: 4
+  pin_memory: True
+  shuffle: False
+
+test_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: src.dataset.normal_dist.TestDataset
+  batch_size: 32
+  num_workers: 4
+  pin_memory: True
+  shuffle: False

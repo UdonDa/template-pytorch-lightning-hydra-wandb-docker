@@ -1,0 +1,7 @@
+# @package generator
+
+_target_: src.models.generators.dcgan_64.Generator
+
+nz: 100
+nc: 3
+ngf: 64

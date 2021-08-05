@@ -1,1 +1,0 @@
-python main.py gpus=[3] solver=src.solver.gan

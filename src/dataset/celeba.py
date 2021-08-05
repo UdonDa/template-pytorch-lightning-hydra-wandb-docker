@@ -11,6 +11,7 @@ import torchvision
 import torchvision.transforms as T
 from torch import Tensor
 from glob import glob
+from PIL import Image
 
 
 class CelebADataset(torch.utils.data.Dataset):
@@ -35,33 +36,40 @@ class CelebADataset(torch.utils.data.Dataset):
         return len(self.ids)
 
     def __getitem__(self, key: Union[int, slice]) -> Union[Tensor, List[Tensor]]:
-        img, label = self.dataset[key]
+        id = self.ids[key]
+        path = self.files[id]
         
-        img = img.convert('RGB')
+        img = Image.open(path).convert('RGB')
         img = self.transform(img) # [3, 28, 28], range: [-1, 1]
         
-        label = F.one_hot(torch.tensor(label), num_classes=10) # [10]
-
-        return img, label
+        return img
 
 
 class TrainDataset(CelebADataset):
-    def __init__(self) -> None:
+    def __init__(self, 
+        img_size=256,
+        mean=[0.5, 0.5, 0.5],
+        std=[0.5, 0.5, 0.5],
+    ) -> None:
         transform = T.Compose([
-            T.Resize((256, 256)),
+            T.Resize((img_size, img_size)),
             T.RandomHorizontalFlip(),
             T.ToTensor(),
-            T.Normalize(mean=0.5, std=0.5),
+            T.Normalize(mean=mean, std=std),
         ])
         super().__init__(is_train=True, transform=transform)
         
 
 class TestDataset(CelebADataset):
-    def __init__(self) -> None:
+    def __init__(self,
+        img_size=256,
+        mean=[0.5, 0.5, 0.5],
+        std=[0.5, 0.5, 0.5]
+    )-> None:
         transform = T.Compose([
-            T.Resize((256, 256)),
+            T.Resize((img_size, img_size)),
             T.ToTensor(),
-            T.Normalize(mean=0.5, std=0.5),
+            T.Normalize(mean=mean, std=std),
         ])
 
         super().__init__(is_train=False, transform=transform)
