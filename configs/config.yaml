@@ -9,8 +9,7 @@ defaults:
   - dataset: celeba
   - generator: dcgan_64
   - discriminator: dcgan_64
-  - optimizer_g: adam_0509
-  - optimizer_d: adam_0509
+  - optimizer: adam
 
   # enable color logging
   - override hydra/job_logging: colorlog

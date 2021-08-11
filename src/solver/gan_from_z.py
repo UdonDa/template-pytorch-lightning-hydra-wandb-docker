@@ -46,10 +46,10 @@ class Solver(pl.LightningModule):
     def configure_optimizers(self):
         
         self.optimizer_g = instantiate(
-                                self.config.optimizer_g,
+                                self.config.optimizer,
                                 params=self.G.parameters())
         self.optimizer_d = instantiate(
-                                self.config.optimizer_d,
+                                self.config.optimizer,
                                 params=self.D.parameters())
         
         return [self.optimizer_g, self.optimizer_d], []

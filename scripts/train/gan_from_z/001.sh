@@ -3,4 +3,5 @@ python main.py gpus=[3] \
     versions=001 \
     solver=src.solver.gan_from_z \
     dataset=celeba \
-    epochs=5
+    epochs=5 \
+    optimizer.betas=[0.5,0.999]
