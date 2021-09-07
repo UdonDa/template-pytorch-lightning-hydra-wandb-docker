@@ -1,4 +1,4 @@
-# @package optimizer_g
+# @package optimizer
 # https://pytorch.org/docs/stable/generated/torch.optim.Adam.html
 
 _target_: torch.optim.Adam
