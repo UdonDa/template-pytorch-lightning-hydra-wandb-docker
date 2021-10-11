@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:1.9.0-cuda11.1-cudnn8-devel
+FROM pytorch/pytorch:1.8.0-cuda11.1-cudnn8-devel
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -37,7 +37,3 @@ ENV SHELL /bin/bash
 
 ADD requirements.txt /src
 RUN pip install -r requirements.txt
-
-EXPOSE 36000
-EXPOSE 36001
-EXPOSE 36002
